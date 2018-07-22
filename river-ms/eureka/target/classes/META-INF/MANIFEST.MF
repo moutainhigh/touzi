@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: ms-eureka
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: Administrator
+Implementation-Vendor-Id: com.river
+Build-Jdk: 1.8.0_74
+Implementation-URL: http://projects.spring.io/spring-boot/ms-eureka/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

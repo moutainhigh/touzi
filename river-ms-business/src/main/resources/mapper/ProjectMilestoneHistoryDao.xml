@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectMilestoneHistoryDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ProjectMilestoneHistory">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="expected_finish_time" property="expectedFinishTime" />
+		<result column="actual_finish_time" property="actualFinishTime" />
+		<result column="completion_degrees" property="completionDegrees" />
+		<result column="deviation" property="deviation" />
+		<result column="deviation_degrees" property="deviationDegrees" />
+		<result column="state" property="state" />
+		<result column="createTime" property="createTime" />
+		<result column="current_situation" property="currentSituation" />
+		<result column="plan_nextMonth" property="planNextMonth" />
+		<result column="b1" property="b1" />
+	</resultMap>
+
+	<select id="getProjectMilestoneHistoryByMilestoneId" resultMap="BaseResultMap">
+		SELECT * FROM project_milestone_history WHERE
+		milestoneId=#{milestoneId}
+	</select>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IMenuMapper">
+	<resultMap type="MenuEntity" id="menuTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="elementType" property="elementType" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="menuIcon" property="menuIcon" />
+		<result column="menuPath" property="menuPath" />
+		<result column="functionId" property="functionId" />
+		<result column="functionCode" property="functionCode" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="MenuEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="menuTree" parameterType="long">
+		SELECT * FROM sys_menu WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="MenuEntity" parameterType="long">
+		SELECT * FROM sys_menu WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+
+	<select id="getMenuByFunction" resultType="com.river.core.entity.MenuEntity">
+		SELECT t.* FROM sys_menu t WHERE t.isDelete=0 and t.isDelete = 0 AND (
+		<if test="functions != null and functions.size() != 0">
+			t.functionCode in
+			<foreach collection="functions" item="item" separator=","
+				open="(" close=")">
+				#{item}
+			</foreach>
+			OR
+		</if>
+		t.functionCode is NULL )
+		AND t.parentId = #{parentId}
+	</select>
+
+	<select id="getMenuByIds" resultType="com.river.core.entity.MenuEntity">
+		SELECT t.* FROM sys_menu t WHERE t.isDelete=0 and t.isDelete = 0 AND 
+		<if test="ids != null and ids.size() != 0">
+			t.entityId in
+			<foreach collection="ids" item="item" separator=","
+				open="(" close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+</mapper>

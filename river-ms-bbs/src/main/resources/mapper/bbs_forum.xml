@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.bbs.mapper.IForumMapper">
+	<resultMap type="ForumEntity" id="forumTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="ForumEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="forumTree" parameterType="long">
+		SELECT * FROM bbs_forum WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="ForumEntity"
+		parameterType="long">
+		SELECT * FROM bbs_forum WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+	<!-- <select id="countTopic" resultType="int">
+		SELECT count(t.entityId) FROM bbs_topic t where t.forumId = #{entityId} and t.isDelete = "0"
+	</select> -->
+</mapper>

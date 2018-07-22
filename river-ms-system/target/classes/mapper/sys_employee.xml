@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IEmployeeMapper">
+	<resultMap type="EmployeeEntity" id="employee">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="idCard" property="idCard" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="dateOfBirth" property="dateOfBirth" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+	</resultMap>
+	<select id="search" resultType="EmployeeEntity">
+		select * from sys_employee where 1=1 AND
+		<if test="keyWords != null and keyWords !=''">
+			entityTitle LIKE '%${keyWords}%' AND
+		</if>
+		<if test="entityCode != null and entityCode !=''">
+			entityCode LIKE '%${entityCode}%' AND
+		</if>
+		<if test="idCard != null and idCard !=''">
+			idCard LIKE '%${idCard}%' AND
+		</if>
+		<if test="mobile != null and mobile !=''">
+			mobile LIKE '%${mobile}%' AND
+		</if>
+		<if test="email != null and email !=''">
+			email LIKE '%${email}%' AND
+		</if>
+		<if test="beginTime != null">
+			createTime &gt;=#{beginTime} AND
+		</if>
+		<if test="endTime!= null">
+			createTime &lt;=#{endTime} AND
+		</if>
+		isDelete = 0
+	</select>
+
+	<select id="getGuidByItCodes" resultMap="employee">
+		select t.* from sys_employee t
+		<where>
+			t.entityCode in
+			<foreach collection="itCodes" open="(" close=")" item="code"
+				separator=",">
+				#{code}
+			</foreach>
+		</where>
+	</select>
+	<select id="getEmp" resultMap="employee">
+		select t.* from sys_employee t
+			<where>
+				t.entityId
+				<if test="isExit == false">
+					not
+				</if>
+				in (
+				select s.employeeId from sys_ref_stationEmployee s 
+					<where>
+						1 = 1 
+						<if test="organizationId != null">
+							and s.organizationId = #{organizationId}
+						</if>
+						<if test="stationId != null">
+							and s.stationId = #{stationId}
+						</if>
+					</where>
+				)
+				<if test="keyword != null">
+					and (
+						t.entityCode like '%${keyword}%' or t.entityTitle like '%${keyword}%'
+					)
+				</if>
+			</where>
+	</select>
+	
+	<select id="getEmployeeEntity" resultMap="employee">
+		select t.* from sys_employee t
+			<where>
+				1=1
+				<if test="keyword != null">
+					and (
+						t.entityCode like '%${keyword}%' or t.entityTitle like '%${keyword}%'
+					)
+				</if>
+			</where>
+	</select>
+</mapper>

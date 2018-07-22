@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectListExtDao">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectListExt">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="estimated_total_investment" property="estimatedTotalInvestment" />
+		<result column="deviation_investment" property="deviationInvestment" />
+		<result column="deviation_degrees_investment" property="deviationDegreesInvestment" />
+		<result column="actual_investment" property="actualInvestment" />
+		<result column="total_investment" property="totalInvestment" />
+		<result column="createTime" property="createTime" />
+	</resultMap>
+	<parameterMap type="map" id="investParameterMap">
+		<parameter property="year" jdbcType="INTEGER" mode="IN" />
+		<parameter property="type" jdbcType="INTEGER" mode="IN" />
+		<parameter property="categoryId" jdbcType="VARCHAR" mode="IN" />
+		<parameter property="cost" jdbcType="DECIMAL" mode="OUT" />
+		<parameter property="total" jdbcType="INTEGER" mode="OUT" />
+		<parameter property="IRR" jdbcType="DECIMAL" mode="OUT" />
+	</parameterMap>
+	<select id="getInvestStatistics" statementType="CALLABLE"
+		parameterMap="investParameterMap" resultType="java.util.HashMap">
+		CALL proc_project_invest(#{year,mode=IN},#{type,mode=IN},#{categoryId,mode=IN},#{cost,jdbcType=DECIMAL,mode=OUT},#{total,jdbcType=INTEGER,mode=OUT},#{IRR,jdbcType=DECIMAL,mode=OUT})
+	</select>
+	<select id="getCountStatistics" statementType="CALLABLE"
+		parameterMap="investParameterMap" resultType="java.util.HashMap">
+		CALL proc_project_count(#{year,mode=IN},#{type,mode=IN},#{categoryId,mode=IN},#{cost,jdbcType=DECIMAL,mode=OUT},#{total,jdbcType=INTEGER,mode=OUT},#{IRR,jdbcType=DECIMAL,mode=OUT})
+	</select>
+	<select id="getProjectType" statementType="CALLABLE" resultType="java.util.HashMap">
+		CALL proc_getProjectType(#{year,mode=IN},#{groupCode,mode=IN})
+	</select>
+		<select id="getCompany" statementType="CALLABLE" resultType="java.util.HashMap">
+		CALL proc_getCompany(#{year,mode=IN})
+	</select>
+	<select id="countMytodo" statementType="CALLABLE" resultType="java.util.HashMap">
+		CALL proc_mytodo_count(#{itcode,mode=IN})
+	</select>
+	<select id="computeGroup" statementType="CALLABLE" resultType="java.util.HashMap">
+		CALL proc_group_compute(#{year,mode=IN})
+	</select>
+	
+</mapper>

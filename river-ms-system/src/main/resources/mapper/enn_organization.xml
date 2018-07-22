@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.webService.mapper.IOraganizationWBMapper">
+
+	<insert id="insert" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="entityId">
+		insert into enn_organization
+		(orgeh,descr,pcjdm,pcjmc,sobidcj,stext,up_orgeh,PRIOX,updatestatus,createdate,operaction)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.orgeh},#{item.descr},#{item.pcjdm},
+			#{item.pcjmc},#{item.sobidcj},#{item.stext},
+			#{item.up_orgeh},#{item.PRIOX},#{item.updatestatus},
+			#{item.createdate},#{item.operaction}
+			)
+		</foreach>
+	</insert>
+
+</mapper>

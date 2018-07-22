@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.res.mapper.ResEvaluateDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.res.entity.ResEvaluate">
+		<id column="entityId" property="entityId" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="content" property="content" />
+		<result column="projectId" property="projectId" />
+		<result column="createTime" property="createTime" />
+		<result column="score" property="score" />
+		<result column="evaluateId" property="evaluateId" />
+		<result column="evaluateItcode" property="evaluateItcode" />
+	</resultMap>
+	<resultMap type="com.river.ms.res.entity.ResEvaluate" id="ResEvaluateResultMap"
+		extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<result column="evaluateResName" property="evaluateResName" />
+		<result column="projectTitle" property="projectTitle" />
+		<result column="projectCode" property="projectCode" />
+	</resultMap>
+	<resultMap type="com.river.ms.res.entity.ResEvaluate" id="ResReceiveEvaluateAndTagHistoryMap"
+		extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<result column="evaluateResName" property="evaluateResName" />
+		<result column="projectTitle" property="projectTitle" />
+		<result column="projectCode" property="projectCode" />
+		<result column="tags" property="tags" />
+		
+		<result column="plProjectid" property="plProjectid" />
+		<result column="projectStageCode" property="projectStageCode" />
+	</resultMap>
+
+	<select id="getResEvaluate" resultMap="ResEvaluateResultMap">
+		select
+			e.*,r1.entityTitle as resName , r2.entityTitle as evaluateResName,pl.entityTitle as projectTitle,pl.entityCode as projectCode
+		from
+			res_evaluate e
+			left join res_list r1 on e.resourceId = r1.entityId
+			left join res_list r2 on e.evaluateId = r2.entityId
+			left join project_list pl on e.projectId = pl.entityId
+		<where>
+			<if test="bool == true">
+				e.evaluateId = #{entityId}
+			</if>
+			<if test="bool == false">
+				e.resourceId = #{entityId}
+			</if>
+		</where>
+	</select>
+	<select id="getResReceiveEvaluateAndTagHistory" resultMap="ResReceiveEvaluateAndTagHistoryMap">
+		select 
+			t1.*,
+			r1.entityTitle as resName,
+			IFNULL(r2.entityTitle,'系统') as evaluateResName,
+			pl.entityTitle as projectTitle,
+			pl.entityCode as projectCode,
+			tag.tags,
+			pl.entityId as plProjectid,
+			pl.stageCode as projectStageCode
+		from 
+			res_evaluate t1 
+			right join (
+			SELECT t2.`projectId`,t2.`evaluateId`,t2.`resourceId`,t2.`createTime`,GROUP_CONCAT(t2.tag) AS tags FROM res_tag_history t2
+			GROUP BY t2.`resourceId`,t2.`projectId`,t2.`evaluateId`,t2.`createTime`
+			) tag ON tag.projectId=t1.`projectId` AND tag.evaluateId=t1.`evaluateId` AND tag.resourceId=t1.`resourceId` AND t1.`createTime`=tag.createTime
+			left join res_list r1 on tag.resourceId = r1.entityId
+			left join res_list r2 on tag.evaluateId = r2.entityId
+			left join project_list pl on tag.projectId = pl.entityId
+		<where>
+			tag.resourceId = #{entityId}
+		</where>
+		order by tag.createTime desc
+	</select>
+	<select id="getResSendEvaluateAndTagHistory" resultMap="ResReceiveEvaluateAndTagHistoryMap">
+			SELECT 
+			t1.*,
+			r1.entityTitle AS resName,
+			r2.entityTitle AS evaluateResName,
+			pl.entityTitle AS projectTitle,
+			pl.entityCode AS projectCode,
+			tag.tags,
+			pl.entityId as plProjectid,
+			pl.stageCode as projectStageCode
+		FROM 
+			res_evaluate t1 
+			LEFT JOIN (
+			SELECT t2.`projectId`,t2.`evaluateId`,t2.`resourceId`,t2.`createTime`,GROUP_CONCAT(t2.tag) AS tags FROM res_tag_history t2
+			GROUP BY t2.`resourceId`,t2.`projectId`,t2.`evaluateId`,t2.`createTime`
+			) tag ON tag.projectId=t1.`projectId` AND tag.evaluateId=t1.`evaluateId` AND tag.resourceId=t1.`resourceId` AND t1.`createTime`=tag.createTime
+			LEFT JOIN res_list r1 ON t1.resourceId = r1.entityId
+			LEFT JOIN res_list r2 ON t1.evaluateId = r2.entityId
+			LEFT JOIN project_list pl ON t1.projectId = pl.entityId
+		<where>
+			t1.evaluateId = #{entityId}
+		</where>
+			order by t1.createTime desc
+	</select>
+</mapper>

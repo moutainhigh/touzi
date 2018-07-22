@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.cms.mapper.IArticleMapper">
+
+	<!-- ArticleEntity处理返回结果集 -->
+	<resultMap type="com.river.ms.cms.entity.ArticleEntity" id="myResultMap">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="keywords" property="keywords" />
+		<result column="displayTime" property="displayTime" />
+		<result column="author" property="author" />
+		<result column="categoryId" property="categoryId" />
+		<result column="categoryTitle" property="categoryTitle" />
+
+		<association property="pvCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleId">
+		</association>
+
+		<association property="ipCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleIdIp">
+		</association>
+
+		<collection property="categoryList" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.cms.mapper.ICategoryMapper.getCategoryEntityByArticleId">
+		</collection>
+	</resultMap>
+	
+	<resultMap type="com.river.ms.cms.entity.ArticleEntity" id="myResultMap2">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="keywords" property="keywords" />
+		<result column="displayTime" property="displayTime" />
+		<result column="author" property="author" />
+		<result column="categoryId" property="categoryId" />
+		<result column="categoryTitle" property="categoryTitle" />
+
+		<association property="pvCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleId">
+		</association>
+
+		<association property="ipCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleIdIp">
+		</association>
+
+		<collection property="categoryList" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.cms.mapper.ICategoryMapper.getCategoryEntityByArticleId">
+		</collection>
+		<collection property="dfsList" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.cms.mapper.IDFSMapper.selectByArticleId">
+		</collection>
+	</resultMap>
+
+<resultMap type="com.river.ms.cms.entity.ArticleEntity" id="myResultMap3">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="keywords" property="keywords" />
+		<result column="displayTime" property="displayTime" />
+		<result column="author" property="author" />
+		<result column="categoryId" property="categoryId" />
+		<result column="categoryTitle" property="categoryTitle" />
+
+		<association property="pvCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleId">
+		</association>
+
+		<association property="ipCount" column="entityId"
+			select="com.river.ms.cms.mapper.ICmsPVStatisticsMapper.countByArticleIdIp">
+		</association>
+
+		<collection property="categoryList" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.cms.mapper.ICategoryMapper.getCategoryEntityByArticleId">
+		</collection>
+		
+		<collection property="dfsList" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.cms.mapper.IDFSMapper.selectByArticleId">
+		</collection>
+	</resultMap>
+	
+	<!-- 条件查询 queryByArticle -->
+	<select id="queryByArticle" resultMap="myResultMap">
+		SELECT cms_article.* , cms_category.entityTitle categoryTitle
+		FROM
+		cms_article LEFT JOIN cms_category ON
+		cms_article.categoryId =
+		cms_category.entityId
+		<where>
+			1 = 1 and cms_article.isDelete = 0
+			<if test="entity.keywords != null and entity.keywords != ''">
+				and
+				( cms_article.entityTitle like '%${entity.keywords}%'
+				or
+				cms_article.entityDesc like '%${entity.keywords}%'
+				or
+				cms_article.author like '%${entity.keywords}%'
+				or
+				cms_article.keywords like '%${entity.keywords}%')
+			</if>
+			<if test="entity.keywords == null or entity.keywords == ''">
+				<if test="entity.entityId != null and entity.entityId != 0">
+					and cms_article.entityId=#{entity.entityId}
+				</if>
+				<if test="entity.entityCode != null and entity.entityCode != ''">
+					and cms_article.entityCode=#{entity.entityCode}
+				</if>
+				<if test="entity.categoryId != null and entity.categoryId != 0">
+					and cms_article.categoryId = #{entity.categoryId}
+				</if>
+				<if test="entity.entityTitle != null and entity.entityTitle != ''">
+					and cms_article.entityTitle like
+					'%${entity.entityTitle}%'
+				</if>
+				<if test="entity.entityDesc != null and entity.entityDesc != ''">
+					and cms_article.entityDesc like '%${entity.entityDesc}%'
+				</if>
+				<if test="entity.author != null and entity.author != ''">
+					and cms_article.author like '%${entity.author}%'
+				</if>
+			</if>
+			<if test="categoryIds != null">
+				<foreach collection="categoryIds" item="item" separator=","
+					open="and cms_article.entityId in 
+					( SELECT  cms_ref_categoryArticle.articleId 
+					FROM cms_ref_categoryArticle 
+					WHERE cms_ref_categoryArticle.categoryId 
+					IN ("
+					close="))">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="queryByCateogryCode" resultMap="myResultMap">
+		select * from cms_article inner join cms_category on
+		cms_article.categoryId=cms_category.entityId
+		where cms_category.entityCode='${entityCode}'
+	</select>
+	<insert id="insertCategoryArticle">
+		insert into cms_ref_categoryArticle(articleId,categoryId) VALUES
+		<foreach collection="categoryIds" item="categoryId" separator=",">
+			<foreach collection="articleIds" item="articleId" separator=",">
+				(#{articleId},#{categoryId})
+			</foreach>
+		</foreach>
+	</insert>
+	<select id="queryByStages" resultMap="myResultMap2">
+		select 
+			w.*,cat.entityTitle as categoryTitle
+		from 
+			(
+				select a.*,COUNT(t.articleId) AS num
+				from
+					<foreach collection="stageCodes" item="code" separator="UNION ALL" open="(" close=")">
+						SELECT DISTINCT t1.articleId FROM cms_ref_categoryArticle t1 WHERE t1.categoryId = (
+							select t2.entityId from cms_category t2 where t2.entityCode = #{code}
+						)
+					</foreach>
+					t 
+					left join cms_article a on t.articleId = a.entityId
+				GROUP BY t.articleId
+			) w
+			LEFT JOIN cms_category cat ON w.categoryId = cat.entityId
+		<where>
+			w.num = #{stageCodesNum}
+		</where>
+	</select>
+	<select id="getByIdRiver" resultMap="myResultMap3">
+		SELECT cms_article.* , cms_category.entityTitle categoryTitle
+			FROM
+			cms_article LEFT JOIN cms_category ON
+			cms_article.categoryId =
+			cms_category.entityId
+			<where>
+				1 = 1 and cms_article.isDelete = 0 and cms_article.entityId = #{entityId}
+			</where>
+	</select>
+</mapper>
+

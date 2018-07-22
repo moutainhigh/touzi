@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IFunctionMapper">
+	<resultMap type="FunctionEntity" id="functionTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="elementType" property="elementType" />
+		<result column="entityDesc" property="entityDesc" />
+		
+		<result column="functionType" property="functionType" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="FunctionEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="functionTree" parameterType="long">
+		SELECT * FROM sys_function WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="FunctionEntity"
+		parameterType="long">
+		SELECT * FROM sys_function WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+</mapper>

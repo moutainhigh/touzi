@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectConditionFeedbackDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ProjectConditionFeedback">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestone" property="milestone" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="conditionId" property="conditionId" />
+		<result column="fix_state" property="fixState" />
+		<result column="feedback" property="feedback" />
+		<result column="fixed_time" property="fixedTime" />
+		<result column="deviation" property="deviation" />
+		<result column="deviation_cause" property="deviationCause" />
+		<result column="implement_state" property="implementState" />
+		<result column="implement" property="implement" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="feedbackItcode" property="feedbackItcode" />
+		<result column="feedbackResourceId" property="feedbackResourceId" />		
+	</resultMap>
+<resultMap id="ConditionResultMap"
+		type="com.river.ms.business.entity.ProjectConditionFeedback">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestone" property="milestone" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="conditionId" property="conditionId" />
+		<result column="fix_state" property="fixState" />
+		<result column="feedback" property="feedback" />
+		<result column="fixed_time" property="fixedTime" />
+		<result column="deviation" property="deviation" />
+		<result column="deviation_cause" property="deviationCause" />
+		<result column="implement_state" property="implementState" />
+		<result column="implement" property="implement" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="feedbackItcode" property="feedbackItcode" />
+		<result column="feedbackResourceId" property="feedbackResourceId" />
+		<!-- 增加 -->
+		<result column="condition" property="condition" />
+		<result column="conditionId2" property="conditionId" />
+		<result column="conditionType" property="conditionType" />		
+	</resultMap>
+
+
+	<select id="getConditionFeedbackById" resultMap="ConditionResultMap">
+		select 
+			t1.*,t2.condition,t2.type as conditionType,t2.entityId as conditionId2 
+		from
+			project_condition_feedback t1 right join project_condition t2 on t1.conditionId=t2.entityId
+		<where>
+			t2.projectId = #{projectId}
+			<if test="type != null">
+				<if test="type == 0">
+					and ( t1.implement_state = #{type} or t1.implement_state is null )
+				</if>
+				<if test="type == 1">
+					and ( t1.implement_state = #{type} )
+				</if>
+			</if>
+		</where>
+	</select>
+
+<select id="getConditionFeedbackByProjectId" resultMap="ConditionResultMap">
+		select 
+			t1.*,t2.condition,t2.type as conditionType,t2.entityId as conditionId2 
+		from
+			project_condition_feedback t1 inner join project_condition t2 on t1.conditionId=t2.entityId
+		<where>
+			t2.projectId = #{projectId}
+			<if test="type != null">
+				<if test="type == 0">
+					and ( t1.implement_state = #{type} or t1.implement_state is null )
+				</if>
+				<if test="type == 1">
+					and ( t1.implement_state = #{type} )
+				</if>
+			</if>
+		</where>
+	</select>
+</mapper>

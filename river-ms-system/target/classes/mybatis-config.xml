@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+	</properties>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="aggressiveLazyLoading" value="true" />
+	</settings>
+	<typeAliases>
+		<typeAlias alias="SysUserEntity" type="com.river.core.entity.UserEntity" />
+		<typeAlias alias="ConfigEntity" type="com.river.ms.system.entity.ConfigEntity" />
+
+		<typeAlias alias="DictionaryEntity"
+			type="com.river.ms.system.entity.DictionaryEntity" />
+		<typeAlias alias="DictionaryItemEntity"
+			type="com.river.ms.system.entity.DictionaryItemEntity" />
+		<typeAlias alias="DistrictEntity" type="com.river.ms.system.entity.DistrictEntity" />
+		<typeAlias alias="ElementEntity" type="com.river.core.entity.ElementEntity"/>
+		<typeAlias alias="EmployeeEntity" type="com.river.core.entity.EmployeeEntity" />
+		<typeAlias alias="FunctionEntity" type="com.river.core.entity.FunctionEntity" />
+		<typeAlias alias="IndustryEntity" type="com.river.ms.system.entity.IndustryEntity" />
+		<typeAlias alias="LogEntity" type="com.river.ms.system.entity.LogEntity" />
+		<typeAlias alias="MenuEntity" type="com.river.core.entity.MenuEntity" />
+		<typeAlias alias="OrganizationEntity"
+			type="com.river.core.entity.OrganizationEntity" />
+		<typeAlias alias="RoleEntity" type="com.river.core.entity.RoleEntity" />
+		<typeAlias alias="StationEntity" type="com.river.core.entity.StationEntity" />
+
+		<typeAlias alias="ThirdGroupEntity"
+			type="com.river.ms.system.entity.ThirdGroupEntity" />
+		<typeAlias alias="UserEntity" type="com.river.core.entity.UserEntity" />
+		<typeAlias alias="UserRoleEntity" type="com.river.core.entity.UserRoleEntity" />
+	</typeAliases>
+	<typeHandlers>
+	</typeHandlers>
+	<plugins>
+
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<property name="reasonable" value="true" />
+		</plugin>
+		<plugin interceptor="com.river.core.dao.MapInterceptor">
+		</plugin>
+
+
+	</plugins>
+	<mappers>
+	</mappers>
+</configuration>

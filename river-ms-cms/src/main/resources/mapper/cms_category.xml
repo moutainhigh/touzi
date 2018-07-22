@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.cms.mapper.ICategoryMapper">
+	<resultMap type="CategoryEntity" id="categoryTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="entityType" property="entityType" />
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="CategoryEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="categoryTree" parameterType="long">
+		SELECT * FROM cms_category WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="CategoryEntity"
+		parameterType="long">
+		SELECT * FROM cms_category WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+
+	<select id="getCategoryEntityByArticleId" resultType="CategoryEntity">
+		SELECT *
+		FROM cms_category t WHERE t.entityId IN ( SELECT w.categoryId FROM
+		cms_ref_categoryArticle w WHERE w.articleId = #{articleId})
+	</select>
+
+</mapper>

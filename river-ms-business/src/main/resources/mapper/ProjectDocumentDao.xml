@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectDocumentDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectDocument">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="display_name" property="displayName" />
+		<result column="doc_type" property="docType" />
+		<result column="document_id" property="documentId" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="node" property="node" />
+		<result column="ref_id" property="ref_id" />
+		<result column="type" property="type" />
+		<result column="resName" property="resName" />
+		<result column="stageTitle" property="stageTitle"/>
+		<result column="greatStageTitle" property="greatStageTitle"/>
+		<result column="stageDocId" property="stageDocId"/>
+		<result column="documentType" property="documentType"/>
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+	</resultMap>
+
+	<select id="getByProjectId" resultMap="BaseResultMap">
+		SELECT t.*,t2.entityTitle as greatStageTitle,t3.entityTitle as stageTitle,ifnull(t4.docType,t.doc_type) as documentType FROM project_document t 
+		left join project_stage t2 on t.greatStage=t2.entityId
+		left join project_stage t3 on t.stage=t3.entityId
+		LEFT JOIN project_document_type t4 on t.doc_type = t4.fullType
+		WHERE t.projectId = #{projectId}
+		<if test="stage!=null">
+		and t.stage= #{stage}
+		</if>
+		<if test="greatStage!=null">
+		and t.greatStage=#{greatStage}
+			<if test="isAll != null and isAll == false">
+				and t.stage is null
+			</if>
+		</if>
+		<if test="type!=null">
+		and t.type=#{type}
+		</if>
+		<if test="processInstanceId != null">
+			and t.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+			<if test="isAll != null and isAll == false">
+				and t.stage is null
+			</if>
+		</if>
+	</select>
+</mapper>

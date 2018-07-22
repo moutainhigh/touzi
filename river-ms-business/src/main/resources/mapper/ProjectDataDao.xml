@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectDataDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectData">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="indicator_id" property="indicatorId" />
+		<result column="data_item" property="dataItem" />
+		<result column="item_value" property="itemValue" />
+		<result column="year" property="year" />
+		<result column="quarter" property="quarter" />
+		<result column="entityType" property="entityType" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="month" property="month" />
+	</resultMap>
+
+	<select id="getProjectData" resultMap="BaseResultMap">
+		select * from project_data
+		<where>
+			projectId = #{entity.projectId} and entityType = #{entity.entityType}
+			and
+			indicator_id in
+			<foreach collection="ids" item="item" separator="," open="("
+				close=")">
+				#{item}
+			</foreach>
+			<if test="entity.year != null">
+				and year = #{entity.year}
+			</if>
+			<if test="entity.quarter != null">
+				and quarter = #{entity.quarter}
+			</if>
+			<if test="entity.month != null">
+				and month = #{entity.month}
+			</if>
+			ORDER BY year
+		</where>
+	</select>
+
+</mapper>

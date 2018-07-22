@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectModificationDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ProjectModification">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="state" property="state" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="memo" property="memo" />
+		<result column="major" property="major" />
+		<result column="entityType" property="entityType" />
+		<result column="endTime" property="endTime" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+
+		<result column="declareDate" property="declareDate" />
+		<result column="approvalDate" property="approvalDate" />
+		<result column="online" property="online" />
+	</resultMap>
+	<resultMap id="MyResultMap"
+		type="com.river.ms.business.entity.ProjectModification">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="state" property="state" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="memo" property="memo" />
+		<result column="major" property="major" />
+		<result column="entityType" property="entityType" />
+		<result column="endTime" property="endTime" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+
+		<result column="declareDate" property="declareDate" />
+		<result column="approvalDate" property="approvalDate" />
+		<result column="online" property="online" />
+		<result column="resourceName" property="resourceName" />
+	</resultMap>
+
+	<select id="getProjectModificationByProjectId" resultMap="MyResultMap">
+		select 
+			t.*,rl.entityTitle as resourceName 
+		from 
+			project_modification t 
+			left join res_list rl 
+				on t.resourceId = rl.entityId 
+		where 
+			t.projectId = #{projectId}
+			<if test="processInstanceId != null">
+				and t.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+			</if>
+	</select>
+</mapper>

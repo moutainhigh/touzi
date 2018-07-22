@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectOpinionConditionDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectOpinionCondition">
+        <id column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="opinionId" property="opinionId" />
+        <result column="stage" property="stage" />
+        <result column="condition" property="condition" />
+        <result column="type" property="type" />
+        <result column="createTime" property="createTime" />
+    </resultMap>
+  <resultMap id="opinionResultMap" type="com.river.ms.business.entity.ProjectOpinionCondition">
+        <id column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="opinionId" property="opinionId" />
+        <result column="stage" property="stage" />
+        <result column="condition" property="condition" />
+        <result column="type" property="type" />
+        <result column="operator" property="operator" />
+        <result column="itcode" property="itcode" />
+        <result column="createTime" property="createTime" />
+    </resultMap>
+	<select id="getProjectOpinionConditionByOpinionId" resultMap="BaseResultMap">
+		select * from project_opinion_condition where opinionId = #{opinionId}
+	</select>
+		<select id="getOpinionConditionByProjectId" resultMap="opinionResultMap">
+		select t1.*,t2.itcode,t3.entityTitle as operator from project_opinion_condition t1
+		inner join project_approval t2 on t1.opinionId = t2.entityId 
+		left join res_list t3 on t2.resourceId=t3.entityId
+		where t2.projectId= #{projectId} and t1.type=#{type}
+	</select>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IRoleMapper">
+	<resultMap type="RoleEntity" id="roleTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="elementType" property="elementType" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="userName" property="userName"/>
+		<result column="userId" property="userId"/>
+		<result column="roleId" property="roleId"/>
+		<result column="functionName" property="functionName"/>
+		<result column="functionId" property="functionId"/>
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="RoleEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="roleTree" parameterType="long">
+		SELECT * FROM sys_role WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="RoleEntity"
+		parameterType="long">
+		SELECT * FROM sys_role WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+	<insert id="addFunctions" parameterType="java.util.List">
+		insert into sys_ref_roleFunction (roleId,functionId) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.roleId},#{item.functionId})
+		</foreach>
+	</insert>
+	<select id="selectLastId" resultType="long">
+		select LAST_INSERT_ID()
+	</select>
+	<delete id="deleteRoles" parameterType="long">
+		delete from sys_ref_roleFunction where roleId = #{roleId} 
+	</delete>
+	<select id="listRoleFunction"  parameterType="long" resultType="long"> 
+		select sys_ref_roleFunction.functionId
+		FROM sys_ref_roleFunction 
+		WHERE sys_ref_roleFunction.roleId = #{roleId}
+	</select>
+	<select id="listUsers"  parameterType="long" resultType="RoleEntity"> 
+		select sys_ref_userRole.*, sys_user.entityTitle as userName 
+		from sys_ref_userRole LEFT join sys_user ON sys_ref_userRole.userId =  sys_user.entityId
+		WHERE sys_ref_userRole.roleId = #{roleId} 
+		AND sys_ref_userRole.isDelete = 0
+	</select>
+    <update id="removeUserRole" >
+    	update sys_ref_userRole set isDelete = 1 ,deleteTime = now() where roleId=#{roleId} and  userId in
+    	<foreach collection="roleUserId" item="item" open="(" separator="," close=")">
+    	   #{item}
+    	</foreach>
+    </update>
+    <update id="disableUserRole">
+    	update sys_ref_userRole set isDisable = 1 ,disableTime = now() where roleId=#{roleId} and  userId in
+    	<foreach collection="roleUserId" item="item" open="(" separator="," close=")">
+    	   #{item}
+    	</foreach>
+    	
+    </update>
+    
+    <insert id="addUsers" parameterType="java.util.List">
+		insert into sys_ref_userRole (roleId,userId,createTime) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.roleId},#{item.userId},now())
+		</foreach>
+	</insert>
+	<select id="selectableUser" resultType="UserEntity">
+		select * from sys_user where entityId not in (select userId from sys_ref_userRole where 
+		<if test="roleId != null">
+			roleId = #{roleId} and
+		</if>
+			isDelete = 0) and
+		<if test="keyWords != null and keyWords !=''">
+			(entityTitle LIKE '%${keyWords}%' or entityCode like '%${keyWords}%') and 
+		</if>
+		isDelete = 0 and isDisable = 0
+	</select>
+	
+	<select id="getRoleUser" resultType="RoleEntity"> 
+		select sys_ref_userRole.*, sys_user.entityTitle as userName ,sys_user.entityCode as entityCode
+		from sys_ref_userRole LEFT join sys_user ON sys_ref_userRole.userId =  sys_user.entityId
+		WHERE sys_ref_userRole.roleId = #{roleId} 
+		AND sys_ref_userRole.isDelete = 0
+		<if test="keyword != null">
+			and (sys_user.entityCode like '%${keyword}%' or sys_user.entityTitle like '%${keyword}%')
+		</if>
+	</select>
+	
+</mapper>

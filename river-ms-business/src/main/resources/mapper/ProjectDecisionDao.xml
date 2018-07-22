@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectDecisionDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectDecision">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="declareDate" property="declareDate" />
+		<result column="approvalDate" property="approvalDate" />
+		<result column="decision_mode" property="decisionMode" />
+		<result column="state" property="state" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<result column="online" property="online" />
+		<result column="memo" property="memo" />
+	</resultMap>
+
+</mapper>

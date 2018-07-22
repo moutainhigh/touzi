@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectTodoDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectTodo">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="roleId" property="roleId" />
+		<result column="resourceId" property="resourceId" />
+		<result column="itcode" property="itcode" />
+		<result column="createTime" property="createTime" />
+		<result column="endTime" property="endTime" />
+		<result column="finishTime" property="finishTime" />
+		<result column="state" property="state" />
+		<result column="type" property="type" />
+		<result column="groupCode" property="groupCode" />
+	</resultMap>
+	<select id="getProjectTodos" resultMap="BaseResultMap">
+		select t1.* from project_todo t1 where
+		(roleId in
+			<foreach collection="roles" item="item" separator="," open="("
+				close=")">
+				#{item.entityId}
+			</foreach>
+		and resourceId is null
+		)				
+		<if test="resId != null">
+			or (resourceId=${resId})
+		</if>
+	</select>
+	    <select id="insertTodos" statementType="CALLABLE" resultType="java.util.Map">
+    	CALL proc_insert_todos(#{projectId},#{taskCode})
+    </select>
+	
+	
+</mapper>

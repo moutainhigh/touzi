@@ -1,0 +1,52 @@
+server:
+  port: 9001
+zuul:
+  sensitive-headers: null
+  routes:
+    bbs:
+      path: /qa/**
+      serviceId: bbs
+    system:
+      path: /system/**
+      serviceId: system
+    cms:
+      path: /cms/**
+      serviceId: cms
+    vote:
+      path: /vote/**
+      serviceId: vote
+    risk:
+      path: /risk/**
+      serviceId: risk
+    bpm:
+      path: /bpm/**
+      serviceId: bpm
+    business:
+      path: /business/**
+      serviceId: business
+    project:
+      path: /project/**
+      serviceId: project
+    ribbon-consumer:
+      path: /ribbon/**
+      serviceId: gateway
+    resource-service:
+      path: /resource/**
+      service-id: res
+    dfs-service:
+      path: /dfs/**
+      service-id: dfs
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+skyline:
+  crossfilter:
+    #originalURL: http://10.11.11.13:9001
+    originalURL: http://127.0.0.1:9001

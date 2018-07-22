@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectPartnerMemberDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ProjectPartnerMember">
+		<id column="entityId" property="entityId" />
+		<result column="partnerId" property="partnerId" />
+		<result column="projectId" property="projectId" />
+		<result column="member" property="member" />
+		<result column="rate" property="rate" />
+		<result column="money" property="money" />
+		<result column="income" property="income" />
+		<result column="memberEmail" property="memberEmail" />
+		<result column="memberResId" property="memberResId" />
+		<result column="memberItcode" property="memberItcode" />
+		<result column="createTime" property="createTime" />
+	</resultMap>
+	<resultMap type="com.river.ms.business.entity.ProjectPartnerMember"
+		id="PartnerMemberResultMap" extends="BaseResultMap">
+	</resultMap>
+
+	<select id="selectProjectPartnerMemberByProjectPartnerId" resultMap="PartnerMemberResultMap">
+		select 
+			*
+		from
+			project_partner_member p
+		<where>
+			p.partnerId = #{partnerId}
+		</where>
+	</select>
+	<update id="updateAllRateByProjectId">
+  		 UPDATE project_partner_member t1,(SELECT SUM(t2.money) AS total FROM project_partner_member t2 WHERE t2.projectId =#{projectId} GROUP BY t2.`projectId`) t
+	    SET t1.rate=t1.money*100/t.total
+	    WHERE projectId=#{projectId}
+	</update>
+	
+</mapper>

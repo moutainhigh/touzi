@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IElementMapper">
+	<resultMap type="ElementEntity" id="elementTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="elementType" property="elementType" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="functionId" property="functionId" />
+		<result column="functionCode" property="functionCode" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="ElementEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="elementTree" parameterType="long">
+		SELECT * FROM sys_element WHERE isDelete='0' AND parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="ElementEntity"
+		parameterType="long">
+		SELECT * FROM sys_element WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+	<select id="getElementByFunction" resultType="com.river.core.entity.ElementEntity">
+		SELECT t.* FROM sys_element t WHERE t.isDelete='0' and t.isDisable = 0 AND (
+		<if test="functions != null and functions.size() != 0">
+			t.functionCode in
+			<foreach collection="functions" item="item" separator=","
+				open="(" close=")">
+				#{item}
+			</foreach>
+			OR
+		</if>
+		t.functionCode is NULL )
+		AND t.parentId = #{parentId}
+	</select>
+</mapper>

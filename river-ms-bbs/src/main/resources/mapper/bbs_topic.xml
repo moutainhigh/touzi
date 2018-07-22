@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.bbs.mapper.ITopicMapper">
+
+	<resultMap type="com.river.ms.bbs.entity.TopicEntity" id="resultMapYD">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="forumId" property="forumId" />
+		<result column="userId" property="userId" />
+		<result column="topicType" property="topicType" />
+		<result column="userName" property="userName" />
+		<association property="forum" column="forumId"
+			select="com.river.ms.bbs.mapper.IForumMapper.getById">
+		</association>
+		<association property="contentEntity" column="{topicId=entityId}"
+			select="com.river.ms.bbs.mapper.IContentMapper.getByTopicIdAndReplyId2">
+		</association>
+		<collection property="replyEntity" column="entityId" ofType="ReplyEntity"
+			javaType="java.util.ArrayList" select="com.river.ms.bbs.mapper.IReplyMapper.getReply"></collection>
+	</resultMap>
+
+	<resultMap type="com.river.ms.bbs.entity.TopicEntity" id="myResultMap">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="forumId" property="forumId" />
+		<result column="userId" property="userId" />
+		<result column="topicType" property="topicType" />
+		<result column="userName" property="userName" />
+		<association property="forum" column="forumId"
+			select="com.river.ms.bbs.mapper.IForumMapper.getById">
+		</association>
+	</resultMap>
+
+	<!-- <select id="countReply" resultType="int"> SELECT count(t.entityId) 
+		FROM bbs_reply t where t.topicId = #{entityId} and t.isDelete = "0" </select> -->
+	<select id="queryByTopic" resultMap="myResultMap">
+		SELECT *
+		FROM
+		bbs_topic t
+		<where>
+			1 = 1 and t.isDelete = 0
+			<if test="entity.topicType != 0">
+				and t.topicType = #{entity.topicType}
+			</if>
+			<if test="entity.entityId != null and entity.entityId != 0">
+				and t.entityId=#{entity.entityId}
+			</if>
+			<if test="entity.entityCode != null and entity.entityCode != ''">
+				and t.entityCode=#{entity.entityCode}
+			</if>
+			<if test="entity.forumId != null and entity.forumId != 0">
+				and t.forumId = #{entity.forumId}
+			</if>
+			<if test="entity.keyWords != null and entity.keyWords != ''">
+				and
+				( t.entityTitle like '%${entity.keyWords}%'
+				or
+				t.entityDesc like '%${entity.keyWords}%')
+			</if>
+		</where>
+	</select>
+
+	<select id="getByIds" resultMap="resultMapYD">
+		SELECT *
+		FROM
+		bbs_topic t WHERE t.entityId in
+		<foreach collection="ids" item="id" open="(" close=")"
+			separator=",">
+			#{id}
+		</foreach>
+	</select>
+
+</mapper>

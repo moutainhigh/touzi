@@ -1,0 +1,17 @@
+server:
+  port: 9999
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:${server.port}/eureka/
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+  instance:
+    hostname: eureka-server1  
+security:
+  user:
+    name: river 
+    password: River&&2018  

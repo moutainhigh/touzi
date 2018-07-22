@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectApprovalDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectApproval">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="memo" property="memo" />
+		<result column="result" property="result" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="propose" property="propose" />
+		<result column="type" property="type" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<collection property="projectOpinionConditions" javaType="ArrayList"
+			column="entityId" ofType="com.river.ms.business.entity.ProjectOpinionCondition"
+			select="com.river.ms.business.mapper.ProjectOpinionConditionDao.getProjectOpinionConditionByOpinionId">
+		</collection>
+	</resultMap>
+	<resultMap id="myResultMap" type="com.river.ms.business.entity.ProjectApproval">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="memo" property="memo" />
+		<result column="result" property="result" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="propose" property="propose" />
+		<result column="type" property="type" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="recommendationLevel" property="recommendationLevel" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+	</resultMap>
+	<resultMap id="expertResultMap" type="com.river.ms.business.entity.ProjectApproval" extends="myResultMap">
+		<result column="flowType" property="flowType" />
+		<result column="condition" property="condition" />
+		<result column="resName" property="resName" />
+		<result column="riskLevel" property="riskLevel" />
+		<result column="riskMemo" property="riskMemo" />
+		<result column="risk" property="risk" />
+		<result column="conditionType" property="conditionType"/>
+	</resultMap>
+
+	<select id="getProjectApprovalByCondition" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_approval a 
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.stage = #{stage}
+		order by a.createTime desc
+	</select>
+
+	<select id="getProjectApproval" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_approval a 
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.resourceId = #{resourceId}
+		order by a.createTime desc
+	</select>
+	<select id="getProjectApprovalAll" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_approval a 
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.resourceId = #{resourceId} AND 
+			<if test="entityId != 0">
+			 a.entityId = #{entityId}
+			</if>
+			<if test="entityId == 0">
+			a.stage in (
+				select sta.entityId from project_stage sta where sta.parentId = #{stage}
+			) AND
+			a.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+			and a.type = 1
+			</if>
+		order by a.createTime desc
+	</select>
+	<select id="getProjectExpertApproval" statementType="CALLABLE" resultMap="expertResultMap">
+		CALL proc_expert_approval(#{projectId},#{stage})
+	</select>
+</mapper>

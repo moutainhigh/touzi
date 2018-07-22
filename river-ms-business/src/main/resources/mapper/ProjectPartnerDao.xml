@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectPartnerDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectPartner">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="f1" property="f1" />
+		<result column="f2" property="f2" />
+		<result column="f3" property="f3" />
+		<result column="f4" property="f4" />
+		<result column="f5" property="f5" />
+		<result column="f6" property="f6" />
+		<result column="d1" property="d1" />
+		<result column="d2" property="d2" />
+		<result column="itcode" property="itcode" />
+		<result column="resId" property="resId" />
+		<result column="createTime" property="createTime" />
+	</resultMap>
+
+	<resultMap type="com.river.ms.business.entity.ProjectPartner"
+		id="ProjectPartnerResultMap" extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<collection property="projectPartnerMember" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.business.mapper.ProjectPartnerMemberDao.selectProjectPartnerMemberByProjectPartnerId">
+		</collection>
+	</resultMap>
+
+	<select id="selectProjectPartner" resultMap="ProjectPartnerResultMap">
+		select
+		p.*,r.entityTitle as resName
+		from
+		project_partner p
+		left join res_list r on p.itcode = r.itcode
+		<where>
+			p.projectId = #{projectId}
+		</where>
+	</select>
+
+</mapper>

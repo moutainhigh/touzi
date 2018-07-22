@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IUserRoleFunction">
+	<resultMap type="UserEntity" id="user">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="userPass" property="userPass" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="passSalt" property="passSalt" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="employeeId" property="employeeId" />
+
+		<collection property="roles" javaType="ArrayList" column="entityId"
+			select="com.river.ms.system.mapper.IUserRoleFunction.getRolesByUserId">
+		</collection>
+
+	</resultMap>
+
+	<resultMap type="RoleEntity" id="role">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+
+		<collection property="functions" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.system.mapper.IUserRoleFunction.getFunctionsByRoleId">
+		</collection>
+
+	</resultMap>
+
+	<select id="getUserByCode" resultMap="user">
+		select * from sys_user
+		where 1=1 AND entityCode = #{code} AND isDisable = 0 AND isDelete = 0
+	</select>
+
+	<select id="getRolesByUserId" resultMap="role">
+		select t.* from sys_role t 
+		where
+		t.entityId in ( 
+			select w.roleId from sys_ref_userRole w where 
+			w.userId = #{id} and 
+			w.isDelete = 0 and 
+			w.isDisable = 0
+		) 
+		and t.isDelete = 0 and t.isDisable = 0
+	</select>
+
+	<select id="getFunctionsByRoleId" resultType="FunctionEntity">
+		select * from sys_function t 
+		where
+		t.entityId in (
+			select w.functionId from sys_ref_roleFunction w 
+			where 
+			w.roleId = #{id}
+		)
+		and t.isDelete = 0 and t.isDisable = 0
+	</select>
+
+</mapper>

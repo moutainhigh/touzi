@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.res.mapper.ResRefTagDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.res.entity.ResRefTag">
+        <id column="entityId" property="entityId" />
+        <result column="tag" property="tag" />
+        <result column="tagType" property="tagType" />
+        <result column="itcode" property="itcode" />
+        <result column="resourceId" property="resourceId" />
+        <result column="createTime" property="createTime" />
+        <result column="num" property="num" />
+    </resultMap>
+	
+	<select id="selectByResId" resultMap="BaseResultMap">
+		select * from res_ref_tag where resourceId = #{resourceId}
+	</select>
+
+</mapper>

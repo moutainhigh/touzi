@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectFinancialIndexDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectFinancialIndex">
+        <id column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="year" property="year" />
+        <result column="quarter" property="quarter" />
+        <result column="a1" property="a1" />
+        <result column="a2" property="a2" />
+        <result column="a3" property="a3" />
+        <result column="a4" property="a4" />
+        <result column="b1" property="b1" />
+        <result column="b2" property="b2" />
+        <result column="b3" property="b3" />
+        <result column="b4" property="b4" />
+        <result column="b5" property="b5" />
+        <result column="b6" property="b6" />
+        <result column="c1" property="c1" />
+        <result column="c2" property="c2" />
+        <result column="c3" property="c3" />
+        <result column="d1" property="d1" />
+        <result column="d2" property="d2" />
+        <result column="d3" property="d3" />
+        <result column="d4" property="d4" />
+        <result column="itcode" property="itcode" />
+        <result column="resourceId" property="resourceId" />
+        <result column="createTime" property="createTime" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.res.mapper.ResListDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.res.entity.ResList">
+		<id column="entityId" property="entityId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="entityType" property="entityType" />
+		<result column="itcode" property="itcode" />
+		<result column="userId" property="userId" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="level" property="level" />
+		
+		<result column="teleno" property="teleno" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="perno" property="perno" />
+		
+		<result column="specialty" property="specialty" />
+	</resultMap>
+	<resultMap id="ResRoleResultMap" type="com.river.ms.res.entity.ResList" extends="BaseResultMap">
+		<result column="resRoleType" property="resRoleType"/>
+		<result column="resRoleCode" property="resRoleCode"/>
+	</resultMap>
+<resultMap id="expertResultMap" type="com.river.ms.res.entity.ResList" extends="BaseResultMap">
+		<result column="stage" property="stage"/>
+		<result column="role" property="role"/>
+		<result column="projectId" property="projectId"/>
+	</resultMap>
+	<resultMap id="employeeResultMap" type="com.river.ms.res.entity.ResList"  extends="BaseResultMap">
+		<result column="employeeId" property="employeeId"/>
+		<result column="isExternal" property="isExternal"/>
+		<result column="eId" property="eId"/>
+		<result column="projectId" property="projectId" />
+		<result column="gongsi" property="gongsi"/>
+	</resultMap>
+	<resultMap id="GetResById" type="com.river.ms.res.entity.ResList"  extends="BaseResultMap">
+		<collection property="tags" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.res.mapper.ResRefTagDao.selectByResId">
+		</collection>
+	</resultMap>
+	<select id="selectResPageByCategoryType" resultMap="BaseResultMap">
+		select r.* from res_list r where 1 = 1
+		<if test="categoryType != null">
+			and r.entityId in ( 
+			select rc.resourceId from res_ref_category rc where rc.categoryId in ( 
+				select c.entityId from res_category c 
+				<where>
+						c.entityType = #{categoryType}
+				</where>
+				)
+			)
+		</if>
+		<if test="projectId != 0">
+			and r.entityId not in 
+					(select pm.memberId from project_member pm where pm.projectId = #{projectId})
+			<if test="isExcludeExpert != null and isExcludeExpert == true">
+				and r.entityId not in 
+						(select pe.resourceId from project_expert pe where pe.projectId = #{projectId}
+						<if test="stage != null and stage != 0">
+							 and pe.stage = #{stage}
+						</if>
+						)
+			</if>
+		</if>
+		<if test="keyWord != null">
+			and (r.entityTitle like '%${keyWord}%' or r.itcode like '%${keyWord}%' )
+		</if>
+		<if test="isExpert == true">
+			and r.userId in (
+				select ur.userId from river.sys_ref_userRole ur where ur.roleId in (
+					select ro.entityId from river.sys_role ro where ro.entityCode = 'ZHUANJIA' AND ro.isDelete = '0' AND ro.isDisable = '0'
+				) AND ur.isDelete = '0' AND ur.isDisable = '0'
+			)
+		</if>
+		<if test="isExcludeOneself == true and itcode != null">
+			and r.itcode != #{itcode}
+		</if>
+	</select>
+	<select id="selectResRoleByItcode" resultMap="BaseResultMap">
+	SELECT * FROM view_res_category where itcode='${itcode}'
+	</select>
+	<select id="getComLeader" resultMap="employeeResultMap">
+		CALL proc_getComLeader(#{groupCode})
+	</select>
+	<select id="getFuNengQun" resultMap="employeeResultMap">
+		CALL proc_getFuNengQun(#{groupCode})
+	</select>
+		<select id="getProjectMember" resultMap="employeeResultMap">
+		CALL proc_getProjectMember(#{projectId},#{memberType})
+	</select>
+	<select  id="getDecisionLayer" resultMap="employeeResultMap">
+		CALL proc_getDecisionLayer(#{projectId})
+	</select>
+	<select id="getAllTeamLeader" resultMap="BaseResultMap">
+	 SELECT * FROM view_project_team 
+	 <where>
+	 	<if test="keyword != null">
+	 		view_project_team.entityTitle like '%${keyword}%' or view_project_team.itcode like '%${keyword}%'
+	 	</if>
+	 </where>
+	</select>
+	<select id="getFollowMember" statementType="CALLABLE" resultMap="employeeResultMap">
+		CALL proc_getFollowMember(#{keyword},#{itcode},#{bPage},#{page},#{pageSize},#{total,mode=OUT,jdbcType=BIGINT});
+	</select>
+	<select id="getExpertByProjectId" resultMap="expertResultMap">
+	 SELECT * FROM view_project_expert where projectId=${projectId}
+	 	<if test="stage != 0 and stage!=null">
+	 		and stage=${stage}
+	 	</if>
+	</select>
+	
+	<select id="getResById" resultMap="GetResById">
+		SELECT * FROM res_list where entityId=#{entityId}
+	</select>
+	
+	<select id="exist" resultType="long">
+		select count(*) from
+		res_list t where t.entityId!=#{id} and t.itcode=#{code}
+	</select>
+</mapper>

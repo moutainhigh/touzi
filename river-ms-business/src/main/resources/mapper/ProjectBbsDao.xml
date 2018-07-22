@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectBbsDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectBbs">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="forumCode" property="forumCode" />
+		<result column="topicId" property="topicId" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="topicTitle" property="topicTitle" />
+		<result column="isReply" property="isReply" />
+	</resultMap>
+	
+	<resultMap id="MyResultMap" type="com.river.ms.business.entity.ProjectBbs" extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<result column="projectTitle" property="projectTitle"/>
+		<result column="content" property="content"/>
+		<result column="reply" property="reply"></result>
+		<result column="replyUser" property="replyUser"></result>
+		<result column="replyTime" property="replyTime"></result>
+	</resultMap>
+
+	<select id="selectProjectBbs" resultMap="MyResultMap">
+		select 
+			t.*,
+			r.entityTitle as resName
+		from 
+			project_bbs t 
+			left join res_list r on t.resourceId = r.entityId
+		<where>
+			t.projectId = #{projectId} 
+			<if test="stage != null">
+				AND t.stage = #{stage}
+			</if>
+		</where>
+	</select>
+	<select id="getNoReply" resultMap="MyResultMap">
+		select t.*,t2.entityTitle as projectTitle,r.entityTitle as resName,t3.content
+			from project_bbs t
+			inner join project_list t2 on t.projectId=t2.entityId
+			left join river.bbs_content t3 on t.topicId=t3.topicId and t3.replyId=0
+			left join res_list r on t.resourceId = r.entityId
+		<where>
+		    t.isReply=0 and (t2.leader_itcode=#{itcode} or t.itcode=#{itcode})
+		</where>
+		order by t.createTime
+	</select>
+	<select id="getReplied" resultMap="MyResultMap">
+		select t.*,t2.entityTitle as projectTitle,r.entityTitle as resName,t3.content,
+		    group_concat(t4.content) as reply,t2.leader as replyUser,max(t4.createTime) as replyTime
+			from project_bbs t
+			inner join project_list t2 on t.projectId=t2.entityId
+			left join river.bbs_content t3 on t.topicId=t3.topicId and t3.replyId=0
+			left join res_list r on t.resourceId = r.entityId
+			left join river.bbs_content t4 on t4.topicId=t.topicId and t4.replyId>0
+		<where>
+		    t.isReply=1 and (t2.leader_itcode=#{itcode} or t.itcode=#{itcode})
+		</where>
+		group by t.projectId,t.topicId
+		order by max(t4.createTime) desc
+	</select>	
+</mapper>

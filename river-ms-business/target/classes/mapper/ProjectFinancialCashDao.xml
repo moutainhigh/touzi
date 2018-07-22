@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectFinancialCashDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectFinancialCash">
+        <id column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="year" property="year" />
+        <result column="quarter" property="quarter" />
+        <result column="f1" property="f1" />
+        <result column="f2" property="f2" />
+        <result column="f3" property="f3" />
+        <result column="f4" property="f4" />
+        <result column="f5" property="f5" />
+        <result column="f6" property="f6" />
+        <result column="f7" property="f7" />
+        <result column="f8" property="f8" />
+        <result column="f9" property="f9" />
+        <result column="f10" property="f10" />
+        <result column="f11" property="f11" />
+        <result column="k1" property="k1" />
+        <result column="k2" property="k2" />
+        <result column="k3" property="k3" />
+        <result column="k4" property="k4" />
+        <result column="k5" property="k5" />
+        <result column="k6" property="k6" />
+        <result column="k7" property="k7" />
+        <result column="k8" property="k8" />
+        <result column="k9" property="k9" />
+        <result column="k10" property="k10" />
+        <result column="k11" property="k11" />
+        <result column="k12" property="k12" />
+        <result column="k13" property="k13" />
+        <result column="j1" property="j1" />
+        <result column="j2" property="j2" />
+        <result column="j3" property="j3" />
+        <result column="j4" property="j4" />
+        <result column="j5" property="j5" />
+        <result column="j6" property="j6" />
+        <result column="j7" property="j7" />
+        <result column="j8" property="j8" />
+        <result column="j9" property="j9" />
+        <result column="j10" property="j10" />
+        <result column="j11" property="j11" />
+        <result column="a1" property="a1" />
+        <result column="a2" property="a2" />
+        <result column="a3" property="a3" />
+        <result column="a4" property="a4" />
+        <result column="itcode" property="itcode" />
+        <result column="resourceId" property="resourceId" />
+        <result column="createTime" property="createTime" />
+    </resultMap>
+
+</mapper>

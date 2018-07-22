@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: eureka
+  cloud:
+    config:
+      uri: http://localhost:8888
+      #uri: http://10.39.31.36:8888
+      fail-fast: true
+      password: River-123456
+      username: river
+eureka:
+  server:
+    waitTimeInMsWhenSyncEmpty: 0
+  instance:
+    hostname: eureka-server1      
+    prefer-ip-address: true

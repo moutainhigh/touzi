@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectListDao">
+
+	<resultMap id="resResultMap" type="com.river.ms.business.entity.HistoryResult">
+		<result column="resId" property="resId" />
+		<result column="itcode" property="itcode" />
+		<result column="userName" property="userName" />
+	</resultMap>
+	
+	<resultMap id="stageResultMap" type="com.river.ms.business.entity.HistoryResult">
+		<result column="stageId" property="stageId" />
+		<result column="taskKey" property="taskKey" />
+	</resultMap>
+	
+	<resultMap id="docNumResultMap" type="com.river.ms.business.entity.HistoryResult">
+		<result column="stageId" property="stageId" />
+		<result column="docNum" property="docNum" />
+	</resultMap>
+	
+	<resultMap id="bigDocNumResultMap" type="com.river.ms.business.entity.HistoryResult">
+		<result column="docNum" property="docNum" />
+	</resultMap>
+
+	<select id="getResName" resultMap="resResultMap">
+		select DISTINCT r.itcode,r.entityTitle as userName ,r.entityId as resId from res_list r 
+		<where>
+			r.itcode in 
+			<foreach collection="itcodes" item="itcode" open="(" close=")" separator=",">
+				#{itcode}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="getStageId" resultMap="stageResultMap">
+		select DISTINCT s.entityId as stageId,s.entityCode as taskKey from project_stage s 
+		<where>
+			s.entityCode in 
+			<foreach collection="stageCodes" item="stageCode" open="(" close=")" separator=",">
+				#{stageCode}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="getStageDocNum" resultMap="docNumResultMap">
+		SELECT COUNT(*) as docNum,d.stage as stageId FROM project_document d 
+		<where>
+			d.projectId = #{projectId} 
+			AND d.stage IN 
+			<foreach collection="stageIds" item="stageId" open="(" close=")" separator=",">
+				#{stageId}
+			</foreach>
+		</where>
+		GROUP BY d.stage
+	</select>
+	<select id="getBigStageDocNum" resultMap="bigDocNumResultMap">
+		SELECT COUNT(*) as docNum FROM project_document d 
+		<where>
+			d.projectId = #{projectId} 
+			AND d.stage is null
+			and d.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+		</where>
+	</select>
+</mapper>

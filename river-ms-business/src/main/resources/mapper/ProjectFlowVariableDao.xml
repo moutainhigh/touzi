@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectFlowVariableDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectFlowVariable">
+        <id column="entityId" property="entityId" />
+        <result column="flowId" property="flowId" />
+        <result column="nodeId" property="nodeId" />
+        <result column="stageId" property="stageId" />
+        <result column="variable_name" property="variableName" />
+        <result column="variable_type" property="variableType" />
+        <result column="default_value" property="defaultValue" />
+        <result column="parser" property="parser" />
+    </resultMap>
+
+	<select id="getProjectFlowVariable" resultMap="BaseResultMap">
+		SELECT t.* 
+		FROM project_flow_variable t
+		<where>
+			t.flowId = 0 AND t.nodeId = 0 AND t.stageId = 0
+		</where>
+		UNION
+		SELECT t.* 
+		FROM project_flow_variable t
+		<where>
+			1=1
+			<if test="flowId != null">
+				AND t.flowId = #{flowId}
+			</if>
+			<if test="nodeId != null">
+				AND t.nodeId = #{nodeId}
+			</if>
+			<if test="stageId != null">
+				AND t.stageId = #{stageId}
+			</if>
+		</where>
+	</select>
+
+</mapper>

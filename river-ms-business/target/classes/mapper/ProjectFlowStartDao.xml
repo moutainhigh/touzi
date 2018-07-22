@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectFlowStartDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectFlowStart">
+		<id column="entityId" property="entityId" />
+		<result column="flowId" property="flowId" />
+		<result column="groupCategoryId" property="groupCategoryId" />
+		<result column="scaleOfInvest" property="scaleOfInvest" />
+		<result column="minScaleOfInvest" property="minScaleOfInvest" />
+		<result column="type" property="type" />
+	</resultMap>
+	<resultMap id="myResultMap" type="com.river.ms.business.entity.ProjectFlowStart">
+		<id column="entityId" property="entityId" />
+		<result column="flowId" property="flowId" />
+		<result column="groupCategoryId" property="groupCategoryId" />
+		<result column="scaleOfInvest" property="scaleOfInvest" />
+		<result column="minScaleOfInvest" property="minScaleOfInvest" />
+		<result column="type" property="type" />
+		<association property="flow" column="flowId"
+			select="com.river.ms.business.mapper.ProjectFlowDao.selectById">
+		</association>
+	</resultMap>
+	<select id="selectProjectFlowStart" resultMap="myResultMap">
+		select f.* from project_flow_start f
+		<where>
+			1 = 1
+			<if test="entityId != null">
+				and f.entityId = #{entityId}
+			</if>
+			<if test="groupCategoryId != null">
+				and f.groupCategoryId = #{groupCategoryId}
+			</if>
+			<if test="groupCategoryId == null or groupCategoryId == ''">
+				and f.groupCategoryId is null
+			</if>
+			<if test="type != null">
+				and f.type = #{type}
+			</if>
+		</where>
+	</select>
+	<select id="getParentCategroyId" resultType="java.lang.Long">
+		select p.parentId
+		from project_category_group p where p.entityId = #{categroyId}
+	</select>
+	<select id="isExist" resultType="long">
+		select count(*) 
+		from
+			project_flow_start t 
+		where 
+			t.entityId!=#{entityId} and 
+			t.flowId=#{flowId} and 
+			t.groupCategoryId = #{groupCategoryId} and 
+			t.type = #{type}
+	</select>
+</mapper>

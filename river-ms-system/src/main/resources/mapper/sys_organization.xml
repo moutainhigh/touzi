@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IOrganizationMapper">
+	<resultMap type="OrganizationEntity" id="organizationTree">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="organType" property="organType" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+
+		<association property="parent" column="parentId" select="getParentE">
+		</association>
+		<collection property="children" column="entityId" ofType="OrganizationEntity"
+			javaType="java.util.ArrayList" select="getChildren"></collection>
+	</resultMap>
+	<resultMap type="OrganizationEntity" id="myResultMap">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="parentId" property="parentId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="organType" property="organType" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<collection property="stations" column="entityId"
+			javaType="java.util.ArrayList" select="com.river.ms.system.mapper.IStationMapper.selectStationEntitysByOrgid"></collection>
+	</resultMap>
+	<select id="getChildren" resultMap="organizationTree"
+		parameterType="long">
+		SELECT * FROM sys_organization WHERE isDelete='0' AND
+		parentId=#{parentId}
+	</select>
+	<select id="getParentE" resultType="OrganizationEntity"
+		parameterType="long">
+		SELECT * FROM sys_organization WHERE isDelete='0' AND
+		entityId=#{parentId}
+	</select>
+	<insert id="addStation" parameterType="java.util.List">
+		insert into sys_ref_organStation (organizationId,stationId,createTime)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.organizationId},#{item.stationId},now())
+		</foreach>
+	</insert>
+	<select id="selectLastId" resultType="long">
+		select LAST_INSERT_ID()
+	</select>
+	<insert id="insertOrgAndStation">
+		insert into sys_ref_organStation(organizationId,stationId,createTime)
+		VALUES
+		<foreach collection="stationIds" item="stationId" separator=",">
+			<foreach collection="organizationIds" item="organizationId"
+				separator=",">
+				(#{organizationId},#{stationId},now())
+			</foreach>
+		</foreach>
+	</insert>
+	
+	<delete id="deleteOrgAndStation">
+		DELETE 
+		FROM sys_ref_organStation 
+		<where>
+			organizationId = #{organizationId}
+		</where>
+	</delete>
+	
+	<select id="getOrganizationEntity" resultMap="myResultMap">
+		select * from sys_organization where entityId = #{organizationId}
+	</select>
+	<insert id="insertOrgAndStationAndEmp">
+		insert into sys_ref_stationEmployee(organizationId,stationId,employeeId,createTime)
+		VALUES
+		<foreach collection="empIds" item="empId" separator=",">
+			(#{organizationId},#{stationId},#{empId},now())
+		</foreach>
+	</insert>
+	<delete id="deleteOrgAndStationAndEmp">
+		delete from sys_ref_stationEmployee 
+		<where>
+			organizationId = #{organizationId} and 
+			stationId = #{stationId} and 
+			employeeId in 
+			<foreach collection="empIds" item="empId" separator="," open="(" close=")">
+				#{empId}
+			</foreach>
+		</where>
+	</delete>
+	<update id="updateOrgAndStationAndEmpToNoChief">
+		UPDATE sys_ref_stationEmployee SET isChief = '0' WHERE 
+		employeeId = #{empId}
+	</update>
+	<update id="updateOrgAndStationAndEmpToChief">
+		UPDATE sys_ref_stationEmployee SET isChief = '1' WHERE 
+		organizationId = #{organizationId}
+		and stationId = #{stationId}
+		and employeeId = #{empId}
+	</update>
+</mapper>

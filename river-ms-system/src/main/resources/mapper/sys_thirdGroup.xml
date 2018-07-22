@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IThirdGroupMapper">
+	<resultMap type="ThirdGroupEntity" id="thirdGroup">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="groupType" property="groupType"/>
+		<result column="contact" property="contact"/>
+		<result column="mobile" property="mobile"/>
+		<result column="email" property="email"/>
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+	</resultMap>
+	<select id="search" resultType="ThirdGroupEntity">
+		select * from sys_thirdGroup where 1=1 AND
+		<if test="keyWords != null and keyWords !=''">
+			 entityTitle LIKE '%${keyWords}%' AND
+		</if>
+		<if test="entityCode != null and entityCode !=''">
+			 entityCode LIKE '%${entityCode}%' AND
+		</if>
+		<if test="contact != null and contact !=''">
+			 contact LIKE '%${contact}%' AND
+		</if>
+		<if test="mobile != null and mobile !=''">
+			 mobile LIKE '%${mobile}%' AND
+		</if>
+		<if test="email != null and email !=''">
+			 email LIKE '%${email}%' AND
+		</if>
+		<if test="beginTime != null">
+			createTime &gt;=#{beginTime} AND
+		</if>
+		<if test="endTime!= null">
+			createTime &lt;=#{endTime} AND
+		</if>
+		   isDelete = 0
+	</select>
+	
+	<select id="selectByGroupType" resultType="ThirdGroupEntity">
+		select * from sys_thirdGroup where 1=1 
+		<if test="type != null and type !=''">
+			AND groupType =#{type}
+		</if>
+		AND isDelete = 0 AND isDisable = 0
+	</select>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectOpinionDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectOpinion">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="content" property="content" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="propose" property="propose" />
+		<result column="conclusion" property="conclusion" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="recommendationLevel" property="recommendationLevel" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+	</resultMap>
+
+	<resultMap id="myResultMap" type="com.river.ms.business.entity.ProjectOpinion">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="content" property="content" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="propose" property="propose" />
+		<result column="conclusion" property="conclusion" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="recommendationLevel" property="recommendationLevel" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+	</resultMap>
+
+	<select id="getProjectOpinions" resultMap="myResultMap">
+		select a.*,st.entityTitle as stageTitle
+			from project_opinion a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		where 
+			a.projectId = #{projectId} and 
+			a.stage = #{stage}
+		order by a.createTime desc
+	</select>
+	
+	<select id="selectProjectOpinions" resultMap="myResultMap">
+		select a.*,st.entityTitle as stageTitle
+			from project_opinion a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		where 
+			a.projectId = #{projectId} and 
+			a.resourceId = #{resourceId}
+		order by a.createTime desc
+	</select>
+	
+	<select id="selectProjectOpinionsAll" resultMap="myResultMap">
+		select a.*,st.entityTitle as stageTitle
+			from project_opinion a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		where 
+			a.projectId = #{projectId} and 
+			a.resourceId = #{resourceId} and
+			a.stage in (
+				select sta.entityId from project_stage sta where sta.parentId = #{stage}
+			) and
+			a.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+		order by a.createTime desc
+	</select>
+
+</mapper>

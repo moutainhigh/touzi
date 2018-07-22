@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>
+	</properties>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<!-- <setting name="logImpl" value="LOG4J" /> -->
+	</settings>
+	<typeAliases>
+		<typeAlias alias="ContentEntity" type="com.river.ms.bbs.entity.ContentEntity" />
+		<typeAlias alias="ForumEntity" type="com.river.ms.bbs.entity.ForumEntity" />
+		<typeAlias alias="ReplyEntity" type="com.river.ms.bbs.entity.ReplyEntity" />
+		<typeAlias alias="ThumbupEntity" type="com.river.ms.bbs.entity.ThumbupEntity" />
+		<typeAlias alias="TopicEntity" type="com.river.ms.bbs.entity.TopicEntity" />
+	</typeAliases>
+	<typeHandlers>
+	</typeHandlers>
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!--分页参数合理化 -->
+			<property name="reasonable" value="true" />
+		</plugin>
+		<plugin interceptor="com.river.core.dao.MapInterceptor"></plugin>
+	</plugins>
+	<mappers>
+	</mappers>
+</configuration>

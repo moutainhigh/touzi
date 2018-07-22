@@ -1,0 +1,13 @@
+spring:
+  jmx:
+    enabled: false
+server:
+  port: 8004
+fdfs:
+  soTimeout: 1500
+  connectTimeout: 600
+  thumbImage:
+    width: 150
+    height: 150
+  trackerList:
+  - 10.11.11.13:22122 #文件服务器地址  

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.res.mapper.ResTagHistoryDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.res.entity.ResTagHistory">
+		<id column="entityId" property="entityId" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="tag" property="tag" />
+		<result column="projectId" property="projectId" />
+		<result column="createTime" property="createTime" />
+		<result column="evaluateId" property="evaluateId" />
+		<result column="evaluateItcode" property="evaluateItcode" />
+	</resultMap>
+	<resultMap type="com.river.ms.res.entity.ResTagHistory" id="ResTagHistoryResultMap"
+		extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<result column="evaluateResName" property="evaluateResName" />
+		<result column="projectTitle" property="projectTitle" />
+		<result column="projectCode" property="projectCode" />
+	</resultMap>
+
+	<select id="getResTagHistory" resultMap="ResTagHistoryResultMap">
+		select
+			r.*,r1.entityTitle as resName , r2.entityTitle as evaluateResName,pl.entityTitle as projectTitle,pl.entityCode as projectCode
+		from
+			res_tag_history r
+			left join res_list r1 on r.resourceId = r1.entityId
+			left join res_list r2 on r.evaluateId = r2.entityId
+			left join project_list pl on r.projectId = pl.entityId
+		<where>
+			<if test="bool == true">
+				r.evaluateId = #{entityId}
+			</if>
+			<if test="bool == false">
+				r.resourceId = #{entityId}
+			</if>
+		</where>
+	</select>
+</mapper>

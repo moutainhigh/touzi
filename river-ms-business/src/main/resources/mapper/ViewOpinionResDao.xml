@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ViewOpinionResDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.river.ms.business.entity.ViewOpinionRes">
+        <result column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="stage" property="stage" />
+        <result column="content" property="content" />
+        <result column="itcode" property="itcode" />
+        <result column="resourceId" property="resourceId" />
+        <result column="createTime" property="createTime" />
+        <result column="propose" property="propose" />
+        <result column="conclusion" property="conclusion" />
+        <result column="recommendationLevel" property="recommendationLevel" />
+        <result column="entityTitle" property="entityTitle" />
+        <result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,29 @@
+server:
+  port: 8012
+spring:  
+  datasource:
+    url: jdbc:mysql://10.11.12.71/river_business?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+  mail:
+    host: smtp.xinaogroup.com
+    username: ifn@enn.cn
+    password: B-AU966G 
+    port: 25
+    test: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          #starttls:
+          #  enable: true
+          #  required: true         
+feign:
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+  activiti:
+    #business: http://10.11.11.13:8080/monitor/business
+    business: http://localhost:8080/monitor/business  
+    #SSO: http://10.11.11.13:8080/river-enn-sso 
+    SSO: http://localhost:8080/river-enn-sso     

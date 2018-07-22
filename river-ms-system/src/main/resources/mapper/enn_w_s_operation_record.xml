@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.webService.mapper.IWSOperationRecordMapper">
+
+	<insert id="insert" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="entityId">
+		insert into enn_w_s_operation_record
+		(tableName,dataId)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.tableName},#{item.dataId}
+			)
+		</foreach>
+	</insert>
+
+</mapper>

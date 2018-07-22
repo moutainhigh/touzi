@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/NCSO.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-bbs"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-business"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-cms"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-config"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-dfs"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-eureka"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-project"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-res"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-ribbon"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ms-system"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/river-core"/>
+	<classpathentry kind="lib" path="E:/tools/tomcat7/apache-tomcat-7.0.57/lib/annotations-api.jar"/>
+	<classpathentry kind="lib" path="E:/tools/tomcat7/apache-tomcat-7.0.57/lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

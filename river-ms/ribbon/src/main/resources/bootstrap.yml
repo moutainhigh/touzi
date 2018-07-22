@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    config:
+      uri: http://localhost:8888
+      #uri: http://10.11.11.13:8888
+      #uri: http://10.39.31.36:8888
+      fail-fast: true
+      password: River-123456
+      username: river    

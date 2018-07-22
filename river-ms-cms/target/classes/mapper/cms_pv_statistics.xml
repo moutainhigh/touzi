@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.cms.mapper.ICmsPVStatisticsMapper">
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="entity.entityId">
+		insert
+		into
+		cms_pv_statistics (createTime,ipAddr,articleId) VALUES
+		(now(),#{entity.ipAddr},#{entity.articleId})
+	</insert>
+
+	<select id="countByArticleId" resultType="long">
+		select count(*)
+		from
+		cms_pv_statistics t where t.articleId = #{articleId}
+	</select>
+
+	<select id="queryPV" resultType="com.river.ms.cms.entity.CmsPVStatistics">
+		select *
+		from
+		cms_pv_statistics t
+		where t.articleId = #{entity.articleId}
+	</select>
+
+	<select id="countByArticleIdIp" resultType="long">
+		SELECT COUNT(DISTINCT
+		t.ipAddr) AS COUNT
+		from
+		cms_pv_statistics t where t.articleId = #{articleId}
+	</select>
+
+</mapper>
+

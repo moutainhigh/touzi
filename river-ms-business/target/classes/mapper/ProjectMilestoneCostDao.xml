@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectMilestoneCostDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ProjectMilestoneCost">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="milestoneId" property="milestoneId" />
+		<result column="expected_investment" property="expectedInvestment" />
+		<result column="actual_investment" property="actualInvestment" />
+		<result column="deviation" property="deviation" />
+		<result column="deviation_degrees" property="deviationDegrees" />
+		<result column="state" property="state" />
+		<result column="createTime" property="createTime" />
+		<result column="f1" property="f1" />
+		<result column="f2" property="f2" />
+		<result column="f3" property="f3" />
+		<result column="f4" property="f4" />
+		<result column="f5" property="f5" />
+		<result column="f6" property="f6" />
+		<result column="f7" property="f7" />
+	</resultMap>
+
+	<select id="getProjectMilestoneCostByMilestoneId" resultMap="BaseResultMap">
+		SELECT * FROM project_milestone_cost WHERE milestoneId=#{milestoneId}
+	</select>
+
+</mapper>

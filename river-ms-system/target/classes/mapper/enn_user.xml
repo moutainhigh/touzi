@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.webService.mapper.IUserWBMapper">
+
+	<insert id="insert" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="entityId">
+		insert into enn_user
+		(userId,userName,userPost,createAt,userSex,userAge,department,jobNumber,orgeh,plans,mobile,email,type,manag,stell,isOnJob,operaction)
+		VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.userId},#{item.userName},#{item.userPost},
+			now(),#{item.userSex},#{item.userAge},
+			#{item.department},#{item.jobNumber},#{item.orgeh},
+			#{item.plans},#{item.mobile},
+			#{item.email},#{item.type},
+			#{item.manag},#{item.stell},
+			#{item.isOnJob},#{item.operaction}
+			)
+		</foreach>
+	</insert>
+
+</mapper>

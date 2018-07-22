@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectRiskDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectRisk">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="level" property="level" />
+		<result column="memo" property="memo" />
+		<result column="itcode" property="itcode" />
+		<result column="resourceId" property="resourceId" />
+		<result column="createTime" property="createTime" />
+		<result column="stageTitle" property="stageTitle" />
+		<collection property="riskItems" javaType="ArrayList"
+			column="entityId"
+			select="com.river.ms.business.mapper.ProjectRiskItemDao.getProjectRiskItemByRiskId">
+		</collection>
+	</resultMap>
+
+
+	<select id="selectProjectRisk" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_risk a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.stage = #{stage}
+		order by a.createTime desc
+	</select>
+	
+	<select id="selectProjectRiskByProjectId" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_risk a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.resourceId = #{resourceId}
+		order by a.createTime desc
+	</select>
+	
+	<select id="selectProjectRiskByProjectIdAll" resultMap="BaseResultMap">
+		SELECT a.*,st.entityTitle as stageTitle
+			FROM project_risk a
+			left join project_stage s 
+				on a.stage = s.entityId
+			left join project_stage st 
+				on st.entityId = s.parentId
+		WHERE 
+			a.projectId = #{projectId} AND 
+			a.resourceId = #{resourceId} AND 
+			a.stage in (
+				select sta.entityId from project_stage sta where sta.parentId = #{stage}
+			) and
+			a.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+		order by a.createTime desc
+	</select>
+</mapper>

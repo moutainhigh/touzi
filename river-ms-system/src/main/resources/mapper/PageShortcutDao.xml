@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IPageShortcutDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.core.entity.PageShortcut">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="menuCode" property="menuCode" />
+		<result column="menuId" property="menuId" />
+		<result column="displayIcon" property="displayIcon" />
+		<result column="itcode" property="itcode" />
+		<result column="useId" property="useId" />
+		<result column="createTime" property="createTime" />
+		<result column="menuPath" property="menuPath"/>
+	</resultMap>
+
+	<select id="getPageShortCutByUser" resultMap="BaseResultMap">
+		select * from page_shortcut
+		where 1=1 
+		<if test="useId!=0">
+		AND useId = #{useId}
+		</if>
+	</select>
+	
+	<delete id="deletePageShortCutByUser">
+		DELETE FROM page_shortcut WHERE useId =#{useId}
+	</delete>
+	
+	<insert id="batchInsertion" parameterType="list">
+		insert into page_shortcut(entityCode,entityTitle,menuCode,menuId,displayIcon
+		,itcode,useId,createTime,menuPath) VALUES
+		<foreach collection="pageShortCutList" item="pageShortCut" separator=",">
+			(#{pageShortCut.entityCode},#{pageShortCut.entityTitle},
+			#{pageShortCut.menuCode},#{pageShortCut.menuId},
+			#{pageShortCut.displayIcon},#{pageShortCut.itcode},
+			#{pageShortCut.useId},#{pageShortCut.createTime},
+			#{pageShortCut.menuPath}
+			)
+		</foreach>
+	</insert>
+</mapper>

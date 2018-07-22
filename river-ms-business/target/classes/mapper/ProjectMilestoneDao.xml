@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectMilestoneDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectMilestone">
+		<id column="entityId" property="entityId" />
+        <result column="projectId" property="projectId" />
+        <result column="milestone" property="milestone" />
+        <result column="sort" property="sort" />
+        <result column="memo" property="memo" />
+        <result column="createTime" property="createTime" />
+        <result column="expected_finish_time" property="expectedFinishTime" />
+        <result column="actual_finish_time" property="actualFinishTime" />
+        <result column="completion_degrees" property="completionDegrees" />
+        <result column="deviation" property="deviation" />
+        <result column="parentId" property="parentId" />
+        <result column="deviation_degrees" property="deviationDegrees" />
+        <result column="updateTime" property="updateTime" />
+        <result column="state" property="state" />
+        <result column="expected_investment" property="expectedInvestment" />
+        <result column="actual_investment" property="actualInvestment" />
+        <result column="expected_duration" property="expectedDuration" />
+        <result column="actual_signingDate" property="actualSigningDate" />
+        <result column="expected_startDate" property="expectedStartDate" />
+        <result column="actual_startDate" property="actualStartDate" />
+        <result column="actual_productionDate" property="actualProductionDate" />
+        <result column="f1" property="f1" />
+        <result column="b1" property="b1" />
+        <result column="s1" property="s1" />
+        <result column="b2" property="b2" />
+
+		<association property="projectMilestoneCost" column="entityId"
+			select="com.river.ms.business.mapper.ProjectMilestoneCostDao.getProjectMilestoneCostByMilestoneId">
+		</association>
+
+		<association property="projectMilestoneHistory" column="entityId"
+			select="com.river.ms.business.mapper.ProjectMilestoneHistoryDao.getProjectMilestoneHistoryByMilestoneId">
+		</association>
+
+	</resultMap>
+
+	<select id="getProjectMilestoneListByProjectId" resultMap="BaseResultMap">
+		SELECT * FROM project_milestone WHERE projectId =#{projectId}
+		order by milestone
+	</select>
+
+	<select id="exist" resultType="long">
+		select count(*) from 
+			project_milestone t 
+		where 
+			t.entityId!=#{id} and 
+			t.projectId = #{projectId} and 
+			t.milestone = #{milestone}
+	</select>
+</mapper>

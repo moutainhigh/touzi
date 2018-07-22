@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IStationMapper">
+	<resultMap type="StationEntity" id="station">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="stationType" property="stationType"/>
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="employeeName" property="employeeName" />
+		<result column="employeeId" property="employeeId" />
+		<result column="stationId" property="stationId" />
+	</resultMap>
+	<insert id="addEmployees" parameterType="java.util.List">
+		insert into sys_ref_stationEmployee (stationId, employeeId,createTime)
+		values 
+		<foreach collection="list" item="item" separator=",">
+			(#{item.stationId},#{item.employeeId}, now())
+		</foreach>
+	</insert>
+	<select id="search" resultType="StationEntity">
+		select * from sys_station where 1=1 AND
+		<if test="keyWords != null and keyWords !=''">
+			 entityTitle LIKE '%${keyWords}%' AND
+		</if>
+		<if test="entityCode != null and entityCode !=''">
+			 entityCode LIKE '%${entityCode}%' AND
+		</if>
+		<if test="beginTime != null">
+			createTime &gt;=#{beginTime} AND
+		</if>
+		<if test="endTime!= null">
+			createTime &lt;=#{endTime} AND
+		</if>
+		   isDelete = 0
+	</select>
+	<select id="listStationEmployees" parameterType="long" resultType="StationEntity">
+		SELECT sys_ref_stationEmployee.*, sys_employee.entityTitle AS employeeName FROM 
+		sys_ref_stationEmployee LEFT JOIN  sys_employee ON sys_ref_stationEmployee.employeeId = sys_employee.entityId
+		WHERE sys_ref_stationEmployee.stationId = #{stationId} 
+		AND sys_ref_stationEmployee.isDelete = 0  
+		AND sys_employee.isDelete=0
+	</select>
+	<update id="removeStationEmployee">
+		UPDATE sys_ref_stationEmployee SET isDelete = 1,deleteTime = now() WHERE stationId = #{stationId} And employeeId IN
+		<foreach collection="staionEmployeeId" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<update id="disableStationEmployee">
+		UPDATE sys_ref_stationEmployee set isDisable = 1,disableTime = now() WHERE stationId = #{stationId} and employeeId IN
+		<foreach collection="staionEmployeeId" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="selectableEmployees" resultType="EmployeeEntity">
+		SELECT * FROM sys_employee WHERE entityId NOT IN (SELECT employeeId FROM sys_ref_stationEmployee WHERE
+		<if test="stationId != 0 or stationId != null">
+			 stationId = #{stationId} AND
+		</if>
+			isDelete = 0) AND 
+		<if test="keyWords != null and keyWords != ''">
+			 entityTitle LIKE '%${keyWords}%' AND
+		</if>
+		isDelete = 0 AND isDisable = 0
+	</select>
+	<select id="selectStationEntitysByOrgid" resultType="StationEntity">
+		select * from sys_station where entityId in (
+			select stationId from sys_ref_organStation where organizationId = #{organizationId}
+		)
+	</select>
+</mapper>

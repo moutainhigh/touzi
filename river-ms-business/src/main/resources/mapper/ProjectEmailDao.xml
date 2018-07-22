@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectEmailDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectEmail">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="projectTitle" property="projectTitle" />
+		<result column="stage" property="stage" />
+		<result column="entityType" property="entityType" />
+		<result column="roleId" property="roleId" />
+		<result column="itcode" property="itcode" />
+		<result column="memo" property="memo" />
+		<result column="createTime" property="createTime" />
+		<result column="state" property="state" />
+		<result column="updateTime" property="updateTime" />
+	</resultMap>
+	<resultMap id="ProjectEmailResultMap" type="com.river.ms.business.entity.ProjectEmail" extends="BaseResultMap">
+		<result column="resName" property="resName" />
+		<result column="resEmail" property="resEmail" />
+		<result column="roleTitle" property="roleTitle" />
+	</resultMap>
+
+	<select id="selectProjectEmail" resultMap="ProjectEmailResultMap">
+		select 
+			e.*,r.entityTitle as resName,r.email as resEmail,sr.entityTitle as roleTitle
+		from
+			project_email e 
+			left join res_list r on e.itcode = r.itcode
+			left join river.sys_role sr on sr.entityId = e.roleId
+		<where>
+			e.state = 0
+		</where>
+	</select>
+</mapper>

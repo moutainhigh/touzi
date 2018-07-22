@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.ILogMapper">
+	<resultMap type="LogEntity" id="log">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="logType" property="logType" />
+		<result column="userId" property="userId"/>
+		<result column="userName" property="userName"/>
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		
+	</resultMap>
+	<select id="queryAll" resultType="LogEntity">
+		select sys_log.* , sys_user.entityTitle as userName from sys_log  left join sys_user  on   sys_log.userId = sys_user.entityId 
+		where sys_log.isDelete = '0'
+	</select>
+	<select id="queryByLimit" resultType="LogEntity">
+		select sys_log.* , sys_user.entityTitle as userName from sys_log  left join sys_user  on   sys_log.userId = sys_user.entityId where 1=1 AND
+		<if test="str != null and str !=''">
+			 sys_log.entityDesc LIKE '%${str}%' AND
+		</if>
+		<if test="beginTime != null">
+			sys_log.createTime &gt;=#{beginTime} AND
+		</if>
+		<if test="endTime!= null">
+			sys_log.createTime &lt;=#{endTime} AND
+		</if>
+		   sys_log.isDelete = 0
+		   
+	</select>
+</mapper>

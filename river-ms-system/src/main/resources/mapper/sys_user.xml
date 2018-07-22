@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.system.mapper.IUserMapper">
+	<resultMap type="UserEntity" id="user">
+		<id column="entityId" property="entityId" />
+		<result column="entityCode" property="entityCode" />
+		<result column="userPass" property="userPass" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityGUID" property="entityGUID" />
+		<result column="passSalt" property="passSalt" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+	</resultMap>
+	<insert id="addRoles" parameterType="java.util.List">
+		insert into sys_ref_userRole (userId,roleId,createTime) values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.userId},#{item.roleId},now())
+		</foreach>
+	</insert>
+	<select id="search" resultType="StationEntity">
+		select * from sys_user where 1=1 AND
+		<if test="keyWords != null and keyWords !=''">
+			 entityTitle LIKE '%${keyWords}%' AND
+		</if>
+		<if test="entityCode != null and entityCode !=''">
+			 entityCode LIKE '%${entityCode}%' AND
+		</if>
+		<if test="beginTime != null">
+			createTime &gt;=#{beginTime} AND
+		</if>
+		<if test="endTime!= null">
+			createTime &lt;=#{endTime} AND
+		</if>
+		   isDelete = 0
+	</select>
+	<select id="listUserRoles" parameterType="long">
+		select roleId from sys_ref_userRole where userId = #{userId}
+	</select>
+	 <update id="removeRoleUser" >
+    	<foreach collection="list" item="item" separator=",">
+    	update sys_ref_userRole set isDelete = 1 , deleteTime = now() where roleId = #{item.roleId} 
+    	</foreach>
+    	And where roleId = #{roleId} 
+    </update>
+    <update id="disableRoleUser">
+    	update sys_ref_userRole set isDisable = 1 ,disableTime = now() where userId = #{userId} AND roleId = #{roleId}
+    </update>
+    <select id="getUser" resultType="UserEntity">
+		select t.* from sys_user t where t.entityId in 
+		<foreach collection="userIds" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

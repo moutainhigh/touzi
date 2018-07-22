@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.cms.mapper.IDFSMapper">
+	<resultMap type="com.river.ms.cms.entity.DFSEntity" id="myResultMap">
+		<id column="entityId" property="id" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="fileType" property="fileType" />
+		<result column="dfs_id" property="dfsId" />
+		<result column="article_id" property="articleId" />
+	</resultMap>
+
+	<select id="selectByArticleId" resultMap="myResultMap">
+		SELECT t.*
+		FROM
+		cms_artucle_dfs t WHERE t.article_id = #{articleId}
+	</select>
+
+	<insert id="insertBitch">
+		insert into cms_artucle_dfs(entityTitle,fileType,dfs_id,article_id) VALUES 
+		<foreach collection="dfsEntitys" item="dfsEntity" open="(" close=")" separator=",">
+			#{dfsEntity.entityTitle},#{dfsEntity.fileType},#{dfsEntity.dfsId},#{dfsEntity.articleId}
+		</foreach>
+	</insert>
+</mapper>

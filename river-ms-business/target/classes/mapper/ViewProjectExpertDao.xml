@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ViewProjectExpertDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.river.ms.business.entity.ViewProjectExpert">
+		<result column="entityId" property="entityId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="entityType" property="entityType" />
+		<result column="itcode" property="itcode" />
+		<result column="userId" property="userId" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="level" property="level" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="role" property="role" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<result column="otherTableId" property="otherTableId" />
+		<result column="specialty" property="specialty" />
+	</resultMap>
+	<resultMap id="MyResultMap"
+		type="com.river.ms.business.entity.ViewProjectExpert">
+		<result column="entityId" property="entityId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="entityType" property="entityType" />
+		<result column="itcode" property="itcode" />
+		<result column="userId" property="userId" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="level" property="level" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="role" property="role" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<result column="otherTableId" property="otherTableId" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="expertCreateTime" property="expertCreateTime" />
+		<result column="specialty" property="specialty" />
+		<collection property="projectApproval" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId}"
+			select="com.river.ms.business.mapper.ProjectApprovalDao.getProjectApproval">
+		</collection>
+		<collection property="projectOpinion" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId}"
+			select="com.river.ms.business.mapper.ProjectOpinionDao.selectProjectOpinions">
+		</collection>
+		<collection property="projectRisk" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId}"
+			select="com.river.ms.business.mapper.ProjectRiskDao.selectProjectRiskByProjectId">
+		</collection>
+	</resultMap>
+	
+	<resultMap id="MyResultMapAll"
+		type="com.river.ms.business.entity.ViewProjectExpert">
+		<result column="entityId" property="entityId" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="entityType" property="entityType" />
+		<result column="itcode" property="itcode" />
+		<result column="userId" property="userId" />
+		<result column="isDelete" property="isDelete" />
+		<result column="deleteTime" property="deleteTime" />
+		<result column="createTime" property="createTime" />
+		<result column="updateTime" property="updateTime" />
+		<result column="isDisable" property="isDisable" />
+		<result column="disableTime" property="disableTime" />
+		<result column="level" property="level" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="role" property="role" />
+		<result column="stageTitle" property="stageTitle" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<result column="otherTableId" property="otherTableId" />
+		<result column="expertCreateTime" property="expertCreateTime" />
+		<result column="flowType" property="flowType" />
+		<result column="specialty" property="specialty" />
+		<collection property="projectApproval" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId,stage=stage,processInstanceId=PROCESS_INSTANCE_ID_,entityId=otherTableId}"
+			select="com.river.ms.business.mapper.ProjectApprovalDao.getProjectApprovalAll">
+		</collection>
+		<collection property="projectOpinion" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId,stage=stage,processInstanceId=PROCESS_INSTANCE_ID_}"
+			select="com.river.ms.business.mapper.ProjectOpinionDao.selectProjectOpinionsAll">
+		</collection>
+		<collection property="projectRisk" javaType="ArrayList"
+			column="{projectId=projectId,resourceId=entityId,stage=stage,processInstanceId=PROCESS_INSTANCE_ID_}"
+			select="com.river.ms.business.mapper.ProjectRiskDao.selectProjectRiskByProjectIdAll">
+		</collection>
+	</resultMap>
+
+	<select id="selectViewProjectExpertByProjectId" resultMap="MyResultMap">
+		SELECT DISTINCT t.entityId,t.entityTitle,t.entityDesc,t.entityType,t.itcode,t.userId,t.level,t.teleno,t.mobile,t.email,
+		t.perno,t.projectId,t.role,t.otherTableId
+		FROM
+		view_project_expert t
+		where t.projectId = #{projectId}
+		order by t.expertCreateTime
+	</select>
+	
+	<select id="selectAllViewProjectExpertByProjectId" resultMap="MyResultMapAll">
+		SELECT t.*,flow.type as flowType
+		FROM 
+		view_project_expert t
+		left join project_stage st on t.stage = st.entityId
+		left join project_flow flow on st.flowId = flow.entityId
+		where t.projectId = #{projectId}
+		<if test="stage != null">
+			and t.stage = #{stage}
+		</if>
+		<if test="processInstanceId != null">
+			and t.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+		</if>
+		order by t.expertCreateTime
+	</select>
+</mapper>

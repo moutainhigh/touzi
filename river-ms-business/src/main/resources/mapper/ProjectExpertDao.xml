@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.river.ms.business.mapper.ProjectExpertDao">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.river.ms.business.entity.ProjectExpert">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="resourceId" property="resourceId" />
+		<result column="itcode" property="itcode" />
+		<result column="role" property="role" />
+		<result column="state" property="state" />
+		<result column="createTime" property="createTime" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+	</resultMap>
+
+	<resultMap id="MyResultMap" type="com.river.ms.business.entity.ProjectExpert">
+		<id column="entityId" property="entityId" />
+		<result column="projectId" property="projectId" />
+		<result column="stage" property="stage" />
+		<result column="resourceId" property="resourceId" />
+		<result column="itcode" property="itcode" />
+		<result column="role" property="role" />
+		<result column="state" property="state" />
+		<result column="createTime" property="createTime" />
+		<result column="PROCESS_INSTANCE_ID_" property="PROCESS_INSTANCE_ID_" />
+		<result column="entityTitle" property="entityTitle" />
+		<result column="entityDesc" property="entityDesc" />
+		<result column="entityType" property="entityType" />
+		<result column="userId" property="userId" />
+		
+		<result column="teleno" property="teleno" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="perno" property="perno" />
+	</resultMap>
+
+	<sql id="Columns">
+		project_expert.entityId,
+		project_expert.projectId,
+		project_expert.stage,
+		project_expert.resourceId,
+		project_expert.itcode,
+		project_expert.role,
+		project_expert.state,
+		project_expert.createTime,
+		res_list.entityTitle,
+		res_list.entityDesc,
+		res_list.entityType,
+		res_list.userId,
+		res_list.teleno,
+		res_list.mobile,
+		res_list.email,
+		res_list.perno
+	</sql>
+	<sql id="Table">
+		project_expert left join res_list on project_expert.resourceId = res_list.entityId
+	</sql>
+
+	<select id="getAllProjectIds" resultType="Long">
+		SELECT DISTINCT
+		t.projectId FROM project_expert t WHERE t.resourceId = #{resourceId}
+	</select>
+	
+	<select id="selectProjectExpert" resultMap="MyResultMap">
+		select 
+		<include refid="Columns"></include>
+		from 
+		<include refid="Table"></include>
+		<where>
+			project_expert.projectId = #{projectId} 
+			<if test="stage != null">
+				and project_expert.stage = #{stage}
+			</if>
+		</where>
+	</select>
+</mapper>
